@@ -1,0 +1,70 @@
+﻿@page "/view/{Id:int}"
+
+@inject HttpClient httpClient
+
+
+
+@if (supplier == null)
+    {
+    }
+    else
+    {
+    <h3> @supplier.Name </h3>
+       <div>
+
+
+        <div class="row">
+            <label style="font-weight:bold; margin-right: 10px;"  >Name:</label>
+            <span>@supplier.Name</span>
+        </div>
+        <div class="row">
+            <label style = "font-weight:bold; margin-right: 10px;" > Address Line 1:</label>
+            <span>@supplier.Address1</span>
+        </div>
+        <div class="row">
+            <label style = "font-weight:bold; margin-right: 10px;" > Address Line 2:</label>
+            <span>@supplier.Name</span>
+        </div>
+        <div class="row">
+            <label style = "font-weight:bold; margin-right: 10px;" > City:</label>
+            <span>@supplier.Name</span>
+        </div>
+        <div class="row">
+            <label style = "font-weight:bold; margin-right: 10px;" > Postal Code:</label>
+            <span>@supplier.Name</span>
+        </div>
+        <div class="row">
+            <label style = "font-weight:bold; margin-right: 10px;" > State:</label>
+            <span>@supplier.Name</span>
+        </div>
+        <br />
+        <a href="/" class="btn btn-success" >Back</a>
+    </div>
+
+}
+
+@code {
+
+
+    private SupplierDTO supplier;
+
+    [Parameter]
+    public int Id { get; set; }
+
+
+    protected override async Task<Task> OnInitializedAsync()
+    {
+        await GetSupplierData(Id);
+
+        return base.OnInitializedAsync();
+    }
+
+    protected async Task GetSupplierData(int Id)
+    {
+        supplier = await httpClient.GetFromJsonAsync<SupplierDTO>("/api/Supplier/GetSupplierById?id=" + Id);
+
+    }
+
+    
+
+}

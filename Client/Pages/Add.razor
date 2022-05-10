@@ -1,0 +1,61 @@
+﻿@page "/add"
+
+@inject HttpClient httpClient
+@inject NavigationManager NavigationManager
+
+<h3>Add New Supplier</h3>
+
+<EditForm Model="supplier" OnValidSubmit="CreateNew">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <div>
+        <div class="form-row">
+            <label for="@supplier.Name">Name</label>
+            <InputText class="form-control" @bind-Value="supplier.Name"></InputText>
+        </div>
+        <div class="form-row">
+            <label for="@supplier.Address1">Address Line 1</label>
+            <InputText class="form-control" @bind-Value="supplier.Address1"></InputText>
+        </div>
+        <div class="form-row">
+            <label for="@supplier.Address2">Address Line 2</label>
+            <InputText class="form-control" @bind-Value="supplier.Address2"></InputText>
+        </div>
+        <div class="form-row">
+            <label for="@supplier.City">City</label>
+            <InputText class="form-control" @bind-Value="supplier.City"></InputText>
+        </div>
+        <div class="form-row">
+            <label for="@supplier.PostalCode">Postal Code</label>
+            <InputText class="form-control" @bind-Value="supplier.PostalCode"></InputText>
+        </div>
+        <div class="form-row">
+            <label for="@supplier.State">State</label>
+            <InputSelect class="form-control" @bind-Value="supplier.State">
+                <option value="">Select State</option>
+                <option value="AR">AR</option>
+                <option value="CA">CA</option>
+                <option value="DE">DE</option>
+                <option value="NY">NY</option>
+            </InputSelect>
+        </div>
+        <br />
+        <button class="btn btn-success" type="submit">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    private SupplierDTO supplier = new SupplierDTO();
+
+    private async void CreateNew()
+    {
+
+        var result = await httpClient.PostAsJsonAsync("/api/Supplier/AddSupplier", supplier);
+        Console.WriteLine(result);
+
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}

@@ -1,0 +1,82 @@
+﻿@page "/"
+@inject HttpClient http;
+
+@using System.Text.Json
+@using System.Net.Http.Json;
+
+Suppliers
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address Line 1</th>
+            <th>Address Line 2</th>
+            <th>City</th>
+            <th>Postal Code</th>
+            <th>State</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Suppliers==null || Suppliers.Length == 0)
+        {
+            <tr><td>no suppliers</td></tr>
+        }
+        else
+        {
+            
+            @for(int i=0;i<Suppliers.Length;i++)
+            {
+    <tr>
+        <td>@Suppliers[i].Name</td>
+        <td>@Suppliers[i].Address1</td>
+        <td>@Suppliers[i].Address2</td>
+        <td>@Suppliers[i].City</td>
+        <td>@Suppliers[i].PostalCode</td>
+        <td>@Suppliers[i].State</td>
+        <td><a class="btn btn-primary" href="/View/@Suppliers[i].Id">View</a></td>
+        <td><a class="btn btn-primary" href="/Edit/@Suppliers[i].Id">Edit</a></td>
+        <td>
+            <button class="btn btn-danger"
+                    @onclick="@(e => DeleteItem(e, i))">
+                Delete
+            </button>
+        </td>
+
+    </tr>
+            }
+        }
+    </tbody>
+</table>
+@code {
+    private SupplierDTO[]? Suppliers;
+
+    protected override async Task<Task> OnInitializedAsync()
+    {
+        await GetSupplierList();
+
+        return base.OnInitializedAsync();
+    }
+
+    protected async Task GetSupplierList()
+    {
+
+        Suppliers = await http.GetFromJsonAsync<SupplierDTO[]>("/api/Supplier/GetSuppliers");
+
+
+    }
+
+    protected async void DeleteItem(MouseEventArgs e, int buttonNumber)
+    {
+        Console.WriteLine(buttonNumber-1);
+        SupplierDTO supplier = Suppliers[buttonNumber-1];
+        Suppliers = await http.GetFromJsonAsync<SupplierDTO[]>("/api/Supplier/DeleteSupplier?id="+ supplier.Id);
+        StateHasChanged();
+    }
+
+
+
+}
